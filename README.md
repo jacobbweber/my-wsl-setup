@@ -1,28 +1,24 @@
-# Table of Contents
-- [Table of Contents](#table-of-contents)
-  - [if running a vm on hyper-v and want to use WSL in the vm](#if-running-a-vm-on-hyper-v-and-want-to-use-wsl-in-the-vm)
-  - [Install chocolatey](#install-chocolatey)
-  - [Install Git](#install-git)
-  - [](#)
-    - [Remove trailing \\r characters if you dont want to install dos2unix if your creating a shell script on windows](#remove-trailing-r-characters-if-you-dont-want-to-install-dos2unix-if-your-creating-a-shell-script-on-windows)
-    - [then doing a binary copy to liux](#then-doing-a-binary-copy-to-liux)
-  - [WSL-Setup](#wsl-setup)
-    - [WSL-Setup-Troubleshooting](#wsl-setup-troubleshooting)
-  - [Ansible-Setup](#ansible-setup)
-    - [Ansible-Setup-Troubleshooting](#ansible-setup-troubleshooting)
-  - [Setup-Git-in-WSL](#setup-git-in-wsl)
-  - [Setup-Powershell-For-Ubuntu](#setup-powershell-for-ubuntu)
-  - [Add-Certificate-into-WSL](#add-certificate-into-wsl)
-  - [Install-Extra-Ansible-Stuff](#install-extra-ansible-stuff)
-  - [Optional-Notes](#optional-notes)
+## (Optional) My typical VM prereqs
 
----
+If running Hyper-V in a Virtual Machine with Nested Virtualization
 
-## if running a vm on hyper-v and want to use WSL in the vm
+- From the hyper-v host enable nested virtualization for the virtual machine
 
+```powershell
 Set-VMProcessor -VMName <VMName> -ExposeVirtualizationExtensions $true
+```
+
+- If running VMware:
+
+```powershell
+$VM = Get-VM -Name <VMName>
+$Spec = New-Object VMware.Vim.VirtualMachineConfigSpec
+$Spec.nestedHVEnabled = $true
+$VM.ExtensionData.ReconfigVM($Spec)
+```
 
 ## Install chocolatey
+
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 ```
@@ -33,9 +29,16 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 choco install git -y
 ```
 
-##
-### Remove trailing \r characters if you dont want to install dos2unix if your creating a shell script on windows
-### then doing a binary copy to liux
+## Running wsl-config.sh in wsl
+
+After cloning the repo and you exectute the script in wsl using bash i.e.
+
+```bash
+# reference Example
+sudo ./mnt/c/temp/my-wsl-setup/wsl-config.sh
+```
+
+You can remove trailing \r characters if you dont want to install dos2unix if your creating a shell script on windows when doing a binary copy to liux
 
 ```shell
 sed -i 's/\r$//' .\wsl-config.sh
@@ -202,46 +205,6 @@ DMZ.CONTOSO.COM = {
 }
 ```
 
-### Ansible-Setup-Troubleshooting
-
-> **Note**
-> Remove ansible and re-install - need to investigate more, but
-> when I blew my local wsl up this got me back to a working, and correct
-> ansible version.
-> <https://www.cyberciti.biz/faq/how-to-install-and-configure-latest-version-of-ansible-on-ubuntu-linux/>
-
-```bash
-sudo apt -y remove ansible
-sudo apt -y --purge autoremove
-sudo apt -y update
-sudo apt -y upgrade
-sudo apt -y install software-properties-common
-sudo apt-add-repository -y ppa:ansible/ansible
-sudo apt -y install ansible
-```
-
-> **Note**
-> IF needed, to fix "kerberos: Bad HTTP response returned from server. Code 500"
-> <https://access.redhat.com/solutions/3486461>
-
-```bash
-pip install --upgrade {pywinrm,pykerberos,requests-kerberos,requests-ntlm}
-```
-
-> **Note**
-> Optional - If needed, create krb5.conf.d directory with permissions DO NOT USE 777 unless trash lab and dont care
-
-```bash
-touch /etc/krb5.conf.d/
-sudo mkdir /etc/krb5.conf.d/
-sudo chmod 777 /etc/krb5.conf.d/
-```
-
-To remove a dir:
-```bash
-rm -d /etc/krb5.conf.d/
-```
-
 ---
 
 ## Setup-Git-in-WSL
@@ -344,7 +307,49 @@ pip3 install PyVmomi -y
 ```
 
 ---
-## Optional-Notes
+
+### Ansible-Setup-Troubleshooting
+
+> **Note**
+> Remove ansible and re-install - need to investigate more, but
+> when I blew my local wsl up this got me back to a working, and correct
+> ansible version.
+> <https://www.cyberciti.biz/faq/how-to-install-and-configure-latest-version-of-ansible-on-ubuntu-linux/>
+
+```bash
+sudo apt -y remove ansible
+sudo apt -y --purge autoremove
+sudo apt -y update
+sudo apt -y upgrade
+sudo apt -y install software-properties-common
+sudo apt-add-repository -y ppa:ansible/ansible
+sudo apt -y install ansible
+```
+
+> **Note**
+> IF needed, to fix "kerberos: Bad HTTP response returned from server. Code 500"
+> <https://access.redhat.com/solutions/3486461>
+
+```bash
+pip install --upgrade {pywinrm,pykerberos,requests-kerberos,requests-ntlm}
+```
+
+> **Note**
+> Optional - If needed, create krb5.conf.d directory with permissions DO NOT USE 777 unless trash lab and dont care
+
+```bash
+touch /etc/krb5.conf.d/
+sudo mkdir /etc/krb5.conf.d/
+sudo chmod 777 /etc/krb5.conf.d/
+```
+
+To remove a dir:
+
+```bash
+rm -d /etc/krb5.conf.d/
+```
+
+## Other-Notes
 <https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git>
 If you are seeking to access the Windows file directory from your WSL distribution command line, instead of C:\Users\username, the directory would be accessed using /mnt/c/Users/username, because the Linux distribution views your Windows file system as a mounted drive.
 
