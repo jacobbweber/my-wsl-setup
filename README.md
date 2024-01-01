@@ -1,6 +1,11 @@
 # Table of Contents
 - [Table of Contents](#table-of-contents)
   - [if running a vm on hyper-v and want to use WSL in the vm](#if-running-a-vm-on-hyper-v-and-want-to-use-wsl-in-the-vm)
+  - [Install chocolatey](#install-chocolatey)
+  - [Install Git](#install-git)
+  - [](#)
+    - [Remove trailing \\r characters if you dont want to install dos2unix if your creating a shell script on windows](#remove-trailing-r-characters-if-you-dont-want-to-install-dos2unix-if-your-creating-a-shell-script-on-windows)
+    - [then doing a binary copy to liux](#then-doing-a-binary-copy-to-liux)
   - [WSL-Setup](#wsl-setup)
     - [WSL-Setup-Troubleshooting](#wsl-setup-troubleshooting)
   - [Ansible-Setup](#ansible-setup)
@@ -15,7 +20,26 @@
 
 ## if running a vm on hyper-v and want to use WSL in the vm
 
-Set-VMProcessor -VMName <VMName> -ExposeVirtualizationExtensions $false
+Set-VMProcessor -VMName <VMName> -ExposeVirtualizationExtensions $true
+
+## Install chocolatey
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+## Install Git
+
+```powershell
+choco install git -y
+```
+
+##
+### Remove trailing \r characters if you dont want to install dos2unix if your creating a shell script on windows
+### then doing a binary copy to liux
+
+```shell
+sed -i 's/\r$//' .\wsl-config.sh
+```
 
 ## WSL-Setup
 

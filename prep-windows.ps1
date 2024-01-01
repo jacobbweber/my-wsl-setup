@@ -1,4 +1,5 @@
-﻿# Function to install a Windows feature
+﻿Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+# Function to install a Windows feature
 function Install-WindowsFeature {
     param (
         [string]$FeatureName,
@@ -68,3 +69,4 @@ try {
 } catch {
     Write-Verbose "There was an error installing WSL $_" -Verbose
 }
+
