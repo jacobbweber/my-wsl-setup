@@ -141,7 +141,7 @@ pip3 install pywinrm[kerberos]
 sudo vi /etc/krb5.conf
 ```
 
-- Be sure to replace contoso.com with your prefered domain name in the examples
+- Be sure to replace contoso.com with your preferred domain name in the examples
 
 ```yaml
 includedir /etc/krb5.conf.d/
