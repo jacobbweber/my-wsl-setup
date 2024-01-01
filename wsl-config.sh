@@ -7,15 +7,19 @@ sudo chattr +i /etc/resolv.conf
 
 sudo apt -y update && sudo apt -y upgrade
 
-sudo apt-add-repository ppa:ansible/ansible
+sudo apt-add-repository --yes ppa:ansible/ansible
 
 sudo apt -y install ansible
 
 
 sudo apt -y install python3-pip
-sudo apt-get -y install python3-dev libkrb5-dev krb5-user
+sudo DEBIAN_FRONTEND=noninteractive apt-get -y install python3-dev libkrb5-dev krb5-user
 pip3 install pywinrm[kerberos]
 
+
+sudo rm /etc/krb5.conf
+
+sudo touch /etc/krb5.conf
 
 sudo cat <<EOF >> /etc/krb5.conf
 
@@ -53,14 +57,6 @@ DMZ.CONTOSO.COM = {
 }
 EOF
 
-sudo apt -y remove ansible
-sudo apt -y --purge autoremove
-sudo apt -y update
-sudo apt -y upgrade
-sudo apt -y install software-properties-common
-sudo apt-add-repository -y ppa:ansible/ansible
-sudo apt -y install ansible
-
 sudo apt-get install git
 
 git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe"
@@ -79,4 +75,4 @@ sudo apt-get update
 
 sudo apt-get install -y powershell
 
-pip3 install PyVmomi -y
+pip3 install PyVmomi
